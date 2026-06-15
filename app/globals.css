@@ -517,6 +517,7 @@ table.tbl tbody td {
   color: var(--fg); vertical-align: middle;
 }
 table.tbl tbody tr:hover { background: var(--surface-2); }
+table.tbl-clickable tbody tr:hover { background: color-mix(in oklab, var(--primary) 7%, var(--surface-2)); }
 table.tbl tbody tr:last-child td { border-bottom: 0; }
 table.tbl tbody tr.selected { background: var(--primary-soft); }
 .td-strong { font-weight: 600; }

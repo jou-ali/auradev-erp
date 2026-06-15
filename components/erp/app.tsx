@@ -8,6 +8,7 @@ import { Dashboard } from './dashboard'
 import { POS } from './pos'
 import { Inventory } from './inventory'
 import { Purchases } from './purchases'
+import { Bills } from './bills'
 import { Settings } from './settings'
 import { LoginScreen } from './login'
 import { useAuth } from '@/lib/auth-context'
@@ -19,6 +20,7 @@ function AppInner() {
   const [collapsed, setCollapsed] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [prefill, setPrefill] = useState<{ view: ViewId; q: string; key: number } | null>(null)
+  const [openBillId, setOpenBillId] = useState<string | null>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -26,6 +28,7 @@ function AppInner() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (view === 'pos') return
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
         setSearchOpen(o => !o)
@@ -33,10 +36,18 @@ function AppInner() {
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [])
+  }, [view])
+
+  useEffect(() => {
+    if (view === 'pos') setSearchOpen(false)
+  }, [view])
 
   function handleSearchSelect(sel: GlobalSearchSelect) {
     setView(sel.view)
+    if (sel.billId) {
+      setOpenBillId(sel.billId)
+      return
+    }
     if (sel.query) setPrefill({ view: sel.view, q: sel.query, key: Date.now() })
   }
 
@@ -65,8 +76,21 @@ function AppInner() {
         />
         <div className={'content' + (isPOS ? ' pos-mode' : '')}>
           <div className="dashboard-mount" style={{ display: view === 'dashboard' ? 'block' : 'none' }}>
-            <Dashboard setView={(v) => setView(v as ViewId)} active={view === 'dashboard'} />
+            <Dashboard
+              setView={(v) => setView(v as ViewId)}
+              onOpenBill={(id) => { setOpenBillId(id); setView('bills') }}
+              active={view === 'dashboard'}
+            />
           </div>
+          {view === 'bills' && (
+            <Bills
+              openBillId={openBillId}
+              onOpenBillConsumed={() => setOpenBillId(null)}
+              prefillQuery={prefill?.view === 'bills' ? prefill.q : undefined}
+              prefillKey={prefill?.view === 'bills' ? prefill.key : undefined}
+              onPrefillConsumed={() => setPrefill(null)}
+            />
+          )}
           {view === 'inventory' && (
             <Inventory
               prefillQuery={prefill?.view === 'inventory' ? prefill.q : undefined}

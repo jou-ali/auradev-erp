@@ -97,6 +97,7 @@ interface TopProductPoint {
 }
 
 interface RecentBillRow {
+  id: string
   billNo: string
   customer: string
   cashier: string
@@ -199,6 +200,7 @@ export interface DashboardData {
   salesTrend: { d: string; cur: number; prev: number }[]
   topProducts: { name: string; qty: number; rev: number }[]
   recentBills: {
+    id: string
     no: string
     cust: string
     cashier: string
@@ -295,6 +297,7 @@ function mapActivityRows(rows: ActivityRow[] | undefined): DashboardData['activi
 
 function mapRecentBills(rows: RecentBillRow[] | undefined): DashboardData['recentBills'] {
   return (rows ?? []).map(b => ({
+    id: b.id,
     no: b.billNo,
     cust: b.customer,
     cashier: b.cashier,

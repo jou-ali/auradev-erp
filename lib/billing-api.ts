@@ -21,6 +21,17 @@ export interface BillLine {
   lineTotal: number
 }
 
+export interface BillSummary {
+  id: string
+  billNo: string
+  customerName: string
+  cashierName: string
+  itemCount: number
+  grandTotal: number
+  paymentStatus: string
+  createdAt: string
+}
+
 export interface SavedBill {
   id: string
   billNo: string
@@ -113,8 +124,48 @@ function mapHeldSummary(b: Record<string, unknown>): HeldBillSummary {
   }
 }
 
+function mapBillSummary(b: Record<string, unknown>): BillSummary {
+  return {
+    id: String(b.id),
+    billNo: String(b.billNo),
+    customerName: String(b.customerName),
+    cashierName: String(b.cashierName),
+    itemCount: Number(b.itemCount),
+    grandTotal: Number(b.grandTotal),
+    paymentStatus: String(b.paymentStatus),
+    createdAt: String(b.createdAt),
+  }
+}
+
+export interface PagedBills {
+  items: BillSummary[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
 export async function fetchCustomers(): Promise<ApiCustomer[]> {
   return apiFetch<ApiCustomer[]>('/api/v1/customers')
+}
+
+export async function fetchBills(q = '', page = 0, size = 25): Promise<PagedBills> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) })
+  if (q.trim()) params.set('q', q.trim())
+  const raw = await apiFetch<Record<string, unknown>>(`/api/v1/bills?${params}`)
+  const items = (raw.content as Record<string, unknown>[] ?? []).map(mapBillSummary)
+  return {
+    items,
+    page: Number(raw.page ?? 0),
+    size: Number(raw.size ?? size),
+    totalElements: Number(raw.totalElements ?? items.length),
+    totalPages: Number(raw.totalPages ?? 1),
+  }
+}
+
+export async function fetchBill(id: string): Promise<SavedBill> {
+  const data = await apiFetch<Record<string, unknown>>(`/api/v1/bills/${id}`)
+  return mapBill(data)
 }
 
 export async function createBill(payload: CreateBillPayload): Promise<SavedBill> {

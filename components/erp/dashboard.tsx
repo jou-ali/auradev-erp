@@ -646,7 +646,15 @@ function TopProductsChart({ data, emptyLabel }: { data: DashboardData['topProduc
   )
 }
 
-export function Dashboard({ setView, active = true }: { setView: (v: string) => void; active?: boolean }) {
+export function Dashboard({
+  setView,
+  onOpenBill,
+  active = true,
+}: {
+  setView: (v: string) => void
+  onOpenBill?: (id: string) => void
+  active?: boolean
+}) {
   const { user } = useAuth()
   const [filters, setFilters] = useState<DashboardFilters>(DEFAULT_DASHBOARD_FILTERS)
   const debouncedFilters = useDebouncedValue(filters, 300)
@@ -848,7 +856,11 @@ export function Dashboard({ setView, active = true }: { setView: (v: string) => 
         <Card
           title="Recent bills"
           sub={d.meta.filtersActive ? `Matching bills in ${periodLabel}` : 'Last 10 transactions in period'}
-          action={<Button size="sm" variant="ghost" iconRight="arrow-right" onClick={() => setView('pos')}>New bill</Button>}
+          action={
+            <Button size="sm" variant="ghost" iconRight="arrow-right" onClick={() => setView('bills')}>
+              View all
+            </Button>
+          }
           noBody
         >
           <div className="tbl-wrap">
@@ -868,7 +880,12 @@ export function Dashboard({ setView, active = true }: { setView: (v: string) => 
                     </td>
                   </tr>
                 ) : d.recentBills.map(b => (
-                  <tr key={b.no}>
+                  <tr
+                    key={b.id}
+                    className="tbl-row-click"
+                    onClick={() => onOpenBill?.(b.id)}
+                    style={{ cursor: onOpenBill ? 'pointer' : undefined }}
+                  >
                     <td className="mono td-strong" style={{ fontSize: 12.5 }}>{b.no}</td>
                     <td>{b.cust}</td>
                     <td className="muted">{b.cashier}</td>
