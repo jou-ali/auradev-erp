@@ -1,9 +1,21 @@
-/** API origin — proxy mode in production; direct to :8080 in local dev. */
+function useSameOriginProxy(): boolean {
+  if (process.env.NEXT_PUBLIC_USE_API_PROXY === 'true') return true
+  if (process.env.NEXT_PUBLIC_USE_API_PROXY === 'false') return false
+
+  if (typeof window !== 'undefined') {
+    const { hostname } = window.location
+    return hostname.endsWith('.vercel.app') || hostname.endsWith('.vercel.sh')
+  }
+
+  return process.env.VERCEL === '1'
+}
+
+/** API origin — same-origin proxy on Vercel; direct to :8080 in local dev. */
 export function getApiBaseUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
   if (fromEnv) return fromEnv
 
-  if (process.env.NEXT_PUBLIC_USE_API_PROXY === 'true') {
+  if (useSameOriginProxy()) {
     if (typeof window !== 'undefined') {
       return window.location.origin
     }
