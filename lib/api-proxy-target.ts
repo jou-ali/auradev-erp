@@ -1,8 +1,15 @@
-/** Backend API origin for Vercel → Railway proxy (server-side). */
+/** Backend API origin for server-side proxy (Vercel → Railway). */
 export function getApiProxyTarget(): string {
-  return (
+  const url = (
     process.env.API_PROXY_URL ??
-    process.env.RAILWAY_API_URL ??
-    'https://auradev-erp-backend-production.up.railway.app'
-  ).replace(/\/$/, '')
+    process.env.NEXT_PUBLIC_API_URL
+  )?.replace(/\/$/, '')
+
+  if (!url) {
+    throw new Error(
+      'API_PROXY_URL is not set. Add it in Vercel env (your backend API origin, no trailing slash).',
+    )
+  }
+
+  return url
 }

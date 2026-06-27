@@ -103,13 +103,38 @@ function receiptLines(bill: SavedBill, meta: ReceiptMeta, options: ReceiptPrintO
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
+  if (cachedLogo?.src === src) {
+    return Promise.resolve(cachedLogo.img)
+  }
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
-    img.onload = () => resolve(img)
+    img.onload = () => {
+      cachedLogo = { src, img }
+      resolve(img)
+    }
     img.onerror = () => reject(new Error(`Failed to load receipt logo: ${src}`))
     img.src = src
   })
+}
+
+/** Warm logo cache when POS loads — avoids delay on first print. */
+export function preloadReceiptLogo(logoUrl?: string) {
+  const src = logoUrl ?? DEFAULT_RECEIPT_META.logoUrl!
+  if (!src || cachedLogo?.src === src) return
+  void loadImage(src).catch(() => {})
+}
+
+let cachedLogo: { src: string; img: HTMLImageElement } | null = null
+let printFrame: HTMLIFrameElement | null = null
+
+function getPrintFrame(): HTMLIFrameElement {
+  if (printFrame && document.body.contains(printFrame)) return printFrame
+  printFrame = document.createElement('iframe')
+  printFrame.setAttribute('aria-hidden', 'true')
+  printFrame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden'
+  document.body.appendChild(printFrame)
+  return printFrame
 }
 
 async function renderCanvas(
@@ -210,17 +235,29 @@ async function printReceiptOnce(
   const canvas = await renderCanvas(bill, meta, options)
   const dataUrl = canvas.toDataURL('image/png')
   const widthMm = options.widthMm === 58 ? 58 : 80
-  const win = window.open('', '_blank', 'noopener,noreferrer,width=360,height=720')
-  if (!win) return
-  win.document.write(`<!DOCTYPE html>
+  const frame = getPrintFrame()
+  const doc = frame.contentDocument ?? frame.contentWindow?.document
+  if (!doc) return
+  doc.open()
+  doc.write(`<!DOCTYPE html>
 <html><head><title>${bill.billNo}</title>
 <style>
+  @page { margin: 0; }
   body { margin: 0; display: flex; justify-content: center; background: #fff; }
   img { width: ${widthMm}mm; max-width: 100%; height: auto; }
-  @media print { body { margin: 0; } img { width: ${widthMm}mm; } }
 </style></head>
-<body><img src="${dataUrl}" alt="Receipt" onload="window.print(); window.close();" /></body></html>`)
-  win.document.close()
+<body><img src="${dataUrl}" alt="Receipt" /></body></html>`)
+  doc.close()
+  const img = doc.querySelector('img')
+  const print = () => {
+    frame.contentWindow?.focus()
+    frame.contentWindow?.print()
+  }
+  if (img?.complete) {
+    print()
+  } else {
+    img?.addEventListener('load', print, { once: true })
+  }
 }
 
 export async function printReceipt(
@@ -231,6 +268,6 @@ export async function printReceipt(
   const copies = Math.max(1, Math.min(options.copies ?? 1, 3))
   for (let i = 0; i < copies; i++) {
     await printReceiptOnce(bill, meta, options)
-    if (i < copies - 1) await sleep(600)
+    if (i < copies - 1) await sleep(250)
   }
 }

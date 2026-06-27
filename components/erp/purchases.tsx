@@ -129,14 +129,14 @@ export function Purchases({
   }
 
   return (
-    <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 1480, margin: '0 auto' }}>
-      <div className="row" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
+    <div className="content-pad page-shell">
+      <div className="page-header">
+        <div className="page-header-main">
           <div className="section-title">Purchases</div>
           <div className="section-sub">Supplier bills · stock in on GRN receive</div>
         </div>
         {(canManage || canSuppliers) && (
-        <div className="row gap8" style={{ flexWrap: 'wrap' }}>
+        <div className="row gap8 page-header-actions" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           {tab === 'bills' ? (
             canManage && (
             <>
@@ -171,7 +171,7 @@ export function Purchases({
         <KpiCard label="Suppliers" value={String(suppliers.length)} icon="truck" tone="tile-info" />
       </div>
 
-      <div className="chips" style={{ marginBottom: 2 }}>
+      <div className="chips chips-scroll" style={{ marginBottom: 2 }}>
         <button type="button" className={'chip' + (tab === 'bills' ? ' on' : '')} onClick={() => setTab('bills')}>
           Purchase bills
         </button>
@@ -197,7 +197,7 @@ export function Purchases({
         ) : (
         <>
         <div className="filter-toolbar">
-          <div style={{ width: 260 }}>
+          <div className="toolbar-field">
             <TextInput
               size="sm"
               icon="search"

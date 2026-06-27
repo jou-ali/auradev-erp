@@ -757,7 +757,7 @@ function PrinterSettings() {
           <Switch checked={showLogo} onChange={setShowLogo} disabled={!canEdit} />
         </div>
         <Field label="Bill copies" hint="Number of copies printed per bill (max 3)">
-          <div style={{ maxWidth: 160 }}>
+          <div className="form-field-narrow">
             <Select value={copies} onChange={canEdit ? setCopies : undefined} options={['1', '2', '3'].map(c => ({ value: c, label: c + (c === '1' ? ' copy' : ' copies') }))} />
           </div>
         </Field>
@@ -823,7 +823,7 @@ export function Settings() {
   }, [user, visibleNav, sec])
 
   return (
-    <div className="content-pad" style={{ maxWidth: 1180, margin: '0 auto' }}>
+    <div className="content-pad page-shell narrow">
       <div style={{ marginBottom: 18 }}>
         <div className="section-title">Settings</div>
         <div className="section-sub">

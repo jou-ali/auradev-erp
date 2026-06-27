@@ -359,16 +359,16 @@ export function Inventory({
   }
 
   return (
-    <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 1480, margin: '0 auto' }}>
-      <div className="row" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
+    <div className="content-pad page-shell compact">
+      <div className="page-header">
+        <div className="page-header-main">
           <div className="section-title">Inventory</div>
           <div className="section-sub">
             {initialLoading ? 'Loading catalog…' : `${products.length} products · ${categories.length} categories`}
           </div>
         </div>
         {(canImport || canExport || canEdit) && (
-        <div className="row gap8">
+        <div className="row gap8 page-header-actions" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           {canImport && <Button size="sm" icon="upload" onClick={() => setImportOpen(true)}>Bulk import</Button>}
           {canExport && <Button size="sm" icon="download" onClick={() => toast(`Exported ${rows.length} rows to CSV`, { icon: 'file-down' })}>Export</Button>}
           {canEdit && <Button size="sm" variant="primary" icon="plus" onClick={() => setAddOpen(true)}>Add Product</Button>}
@@ -395,9 +395,11 @@ export function Inventory({
         ) : (
         <>
         <div className="filter-toolbar">
-          <div className="input sm" style={{ width: 260 }}>
+          <div className="toolbar-field">
+            <div className="input sm" style={{ width: '100%' }}>
             <Icon name="search" size={14} />
             <input value={q} onChange={e => { setQ(e.target.value); setPage(0) }} placeholder="Search name, SKU or barcode" />
+          </div>
           </div>
           <Select size="sm" width={150} value={cat} onChange={v => { setCat(v); setPage(0) }}
             options={[{ value: 'all', label: 'All categories' }, ...categories.map(c => ({ value: c.name, label: c.name }))]} />

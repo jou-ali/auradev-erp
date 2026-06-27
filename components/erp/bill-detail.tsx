@@ -69,7 +69,7 @@ export function BillDetailDrawer({
             </div>
           </div>
 
-          <div className="row gap12" style={{ marginBottom: 16 }}>
+          <div className="row gap12 bill-detail-kpis" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
             <div className="kpi" style={{ flex: 1, padding: 12, gap: 4 }}>
               <div className="kpi-label">Grand total</div>
               <div className="kpi-val tnum" style={{ fontSize: 22 }}>{money(bill.grandTotal)}</div>

@@ -100,13 +100,13 @@ export function SupplierFormModal({
         <Field label="Name" required>
           <TextInput value={name} onChange={setName} placeholder="e.g. Sri Venkateshwara Distributors" />
         </Field>
-        <div className="row gap12" style={{ flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: 160 }}>
+        <div className="row gap12 form-row align-start" style={{ flexWrap: 'wrap' }}>
+          <div className="form-field-flex">
             <Field label="Contact person" optional>
               <TextInput value={contactPerson} onChange={setContactPerson} placeholder="Ramesh" />
             </Field>
           </div>
-          <div style={{ flex: 1, minWidth: 140 }}>
+          <div className="form-field-half">
             <Field label="Phone" optional>
               <TextInput value={phone} onChange={setPhone} placeholder="9448123456" />
             </Field>

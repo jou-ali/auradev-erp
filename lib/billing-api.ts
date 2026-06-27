@@ -67,6 +67,7 @@ export type GstScheme = 'PRODUCT' | 'COMPOSITE' | 'CATEGORY'
 export interface HeldBillSummary {
   id: string
   billNo: string
+  customerId: string
   customerName: string
   itemCount: number
   grandTotal: number
@@ -75,6 +76,7 @@ export interface HeldBillSummary {
 
 export interface BillCartPayload {
   customerId: string
+  heldBillId?: string
   discountMode: 'AMOUNT' | 'PERCENT'
   billDiscount: number
   gstSchemeOverride?: GstScheme
@@ -135,6 +137,7 @@ function mapHeldSummary(b: Record<string, unknown>): HeldBillSummary {
   return {
     id: String(b.id),
     billNo: String(b.billNo),
+    customerId: String(b.customerId),
     customerName: String(b.customerName),
     itemCount: Number(b.itemCount),
     grandTotal: Number(b.grandTotal),
@@ -165,6 +168,20 @@ export interface PagedBills {
 
 export async function fetchCustomers(): Promise<ApiCustomer[]> {
   return apiFetch<ApiCustomer[]>('/api/v1/customers')
+}
+
+export interface CreateCustomerPayload {
+  name: string
+  phone?: string
+  type?: 'b2c' | 'b2b'
+  gstin?: string
+}
+
+export async function createCustomer(payload: CreateCustomerPayload): Promise<ApiCustomer> {
+  return apiFetch<ApiCustomer>('/api/v1/customers', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
 }
 
 export async function fetchBills(q = '', page = 0, size = 25): Promise<PagedBills> {

@@ -4,23 +4,24 @@ function useSameOriginProxy(): boolean {
 
   if (typeof window !== 'undefined') {
     const { hostname } = window.location
-    return hostname.endsWith('.vercel.app') || hostname.endsWith('.vercel.sh')
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return false
+    return true
   }
 
-  return process.env.VERCEL === '1'
+  return process.env.VERCEL === '1' || Boolean(process.env.NEXT_PUBLIC_APP_URL)
 }
 
-/** API origin — same-origin proxy on Vercel; direct to :8080 in local dev. */
+/** API origin — same-origin proxy in production; direct to :8080 in local dev. */
 export function getApiBaseUrl(): string {
-  const fromEnv = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
-  if (fromEnv) return fromEnv
-
   if (useSameOriginProxy()) {
     if (typeof window !== 'undefined') {
       return window.location.origin
     }
-    return ''
+    return process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? ''
   }
+
+  const fromEnv = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
+  if (fromEnv) return fromEnv
 
   if (typeof window !== 'undefined') {
     const { hostname, protocol } = window.location
@@ -30,5 +31,5 @@ export function getApiBaseUrl(): string {
     }
   }
 
-  return 'http://localhost:8080'
+  return process.env.NEXT_PUBLIC_DEV_API_URL?.replace(/\/$/, '') ?? 'http://localhost:8080'
 }

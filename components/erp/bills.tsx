@@ -61,13 +61,13 @@ export function Bills({
   const openBill = (row: BillSummary) => setSelectedId(row.id)
 
   return (
-    <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1480, margin: '0 auto' }}>
-      <div className="row" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>Sales bills</h1>
-          <p className="muted" style={{ fontSize: 13.5, marginTop: 4 }}>Completed transactions · view details and reprint receipts</p>
+    <div className="content-pad page-shell">
+      <div className="page-header">
+        <div className="page-header-main">
+          <h1 className="page-header-title">Sales bills</h1>
+          <p className="muted page-header-sub">Completed transactions · view details and reprint receipts</p>
         </div>
-        <div style={{ width: 280 }}>
+        <div className="page-header-actions">
           <TextInput
             size="sm"
             icon="search"
