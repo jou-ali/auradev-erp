@@ -147,7 +147,7 @@ function DashboardFiltersBar({
   return (
     <Card noBody>
       <div className="filter-toolbar">
-        <div className="chips">
+        <div className="chips chips-scroll">
           {PERIOD_CHIPS.map(p => (
             <button
               key={p.value}
@@ -162,7 +162,7 @@ function DashboardFiltersBar({
 
         {filters.preset === 'custom' && (
           <>
-            <div style={{ width: 148 }}>
+            <div className="date-field">
               <TextInput
                 size="sm"
                 type="date"
@@ -172,7 +172,7 @@ function DashboardFiltersBar({
               />
             </div>
             <span className="muted" style={{ fontSize: 12 }}>to</span>
-            <div style={{ width: 148 }}>
+            <div className="date-field">
               <TextInput
                 size="sm"
                 type="date"
@@ -487,7 +487,7 @@ function SalesTrendChart({ data }: { data: TrendPoint[] }) {
             <span className="chart-axes-title">Y-axis</span>
             <div className="chart-axes-field">
               <span className="chart-axes-label">Min</span>
-              <div style={{ width: 108 }}>
+              <div className="date-field">
                 <TextInput
                   size="sm"
                   type="number"
@@ -500,7 +500,7 @@ function SalesTrendChart({ data }: { data: TrendPoint[] }) {
             </div>
             <div className="chart-axes-field">
               <span className="chart-axes-label">Max</span>
-              <div style={{ width: 108 }}>
+              <div className="date-field">
                 <TextInput
                   size="sm"
                   type="number"
@@ -684,7 +684,7 @@ export function Dashboard({
 
   if (waitingForCustom || (!shellReady && loading)) {
     return (
-      <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1480, margin: '0 auto' }}>
+      <div className="content-pad page-shell">
         <DashboardFiltersBar filters={filters} onChange={setFilters} />
         {error ? (
         <div className="empty" style={{ padding: '80px 0' }}>
@@ -714,7 +714,7 @@ export function Dashboard({
 
   if (!shellReady && !data) {
     return (
-      <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1480, margin: '0 auto' }}>
+      <div className="content-pad page-shell">
         <DashboardFiltersBar filters={filters} onChange={setFilters} />
         <div className="empty" style={{ padding: '80px 0' }}>
           <div className="ei"><Icon name="alert-circle" size={22} /></div>
@@ -750,13 +750,13 @@ export function Dashboard({
         : `Items sold · ${periodLabel}`
 
   return (
-    <div className="content-pad" style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1480, margin: '0 auto' }}>
-      <div className="row" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
+    <div className="content-pad page-shell">
+      <div className="page-header">
+        <div className="page-header-main">
           <div className="section-title">{greeting} 👋</div>
           <div className="section-sub">{tenant} · {periodLabel}</div>
         </div>
-        <div className="row gap8">
+        <div className="row gap8 page-header-actions" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <Button size="sm" icon="refresh-cw" onClick={() => void refetch()} disabled={loading || !customRangeReady}>
             {loading ? 'Updating…' : 'Refresh'}
           </Button>

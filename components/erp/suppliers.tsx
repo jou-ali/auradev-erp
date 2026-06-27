@@ -52,7 +52,7 @@ export function SuppliersPanel({
     <>
       <Card noBody>
         <div className="filter-toolbar">
-          <div style={{ width: 280 }}>
+          <div className="toolbar-field">
             <TextInput
               size="sm"
               icon="search"

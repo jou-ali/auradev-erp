@@ -251,7 +251,7 @@ function ImportResultSummary({
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div className="kpi-grid" style={{ gridTemplateColumns: `repeat(${kpis.length}, 1fr)` }}>
+      <div className="kpi-grid import-kpi-grid">
         {kpis.map(k => (
           <div key={k.label} className="kpi" style={{ padding: 12 }}>
             <div className="kpi-label">{k.label}</div>

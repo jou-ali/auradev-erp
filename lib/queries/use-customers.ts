@@ -1,6 +1,7 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useCallback } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchCustomers } from '@/lib/billing-api'
 import { useAuth } from '@/lib/auth-context'
 import { queryKeys } from './keys'
@@ -15,4 +16,11 @@ export function useCustomersQuery() {
     enabled: Boolean(user),
     staleTime: CUSTOMERS_STALE_MS,
   })
+}
+
+export function useInvalidateCustomers() {
+  const qc = useQueryClient()
+  return useCallback(() => {
+    void qc.invalidateQueries({ queryKey: queryKeys.customers() })
+  }, [qc])
 }

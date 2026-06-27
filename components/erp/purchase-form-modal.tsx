@@ -127,8 +127,8 @@ export function PurchaseFormModal({
         </div>
       )}
 
-      <div className="row gap12" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 200 }}>
+      <div className="row gap12 form-row" style={{ marginBottom: 16 }}>
+        <div className="form-field-flex">
           <Field label="Supplier">
             <div className="row gap8" style={{ alignItems: 'stretch' }}>
               <div style={{ flex: 1 }}>
@@ -140,12 +140,12 @@ export function PurchaseFormModal({
             </div>
           </Field>
         </div>
-        <div style={{ width: 148 }}>
+        <div className="form-field-date">
           <Field label="Bill date">
             <TextInput type="date" value={billDate} onChange={setBillDate} />
           </Field>
         </div>
-        <div style={{ width: 148 }}>
+        <div className="form-field-date">
           <Field label="Due date">
             <TextInput type="date" value={dueDate} onChange={setDueDate} />
           </Field>
@@ -158,8 +158,8 @@ export function PurchaseFormModal({
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
           {lines.map((line, idx) => (
-            <div key={idx} className="row gap8" style={{ alignItems: 'flex-end', flexWrap: 'wrap' }}>
-              <div style={{ flex: 2, minWidth: 180 }}>
+            <div key={idx} className="row gap8 purchase-line-row form-row">
+              <div className="form-field-product">
                 <Select
                   value={line.productId}
                   onChange={v => onProductPick(idx, v)}
@@ -167,7 +167,7 @@ export function PurchaseFormModal({
                   placeholder="Product"
                 />
               </div>
-              <div style={{ width: 88 }}>
+              <div className="form-field-qty">
                 <TextInput
                   size="sm"
                   type="number"
@@ -177,7 +177,7 @@ export function PurchaseFormModal({
                   placeholder="Qty"
                 />
               </div>
-              <div style={{ width: 100 }}>
+              <div className="form-field-rate">
                 <TextInput
                   size="sm"
                   type="number"
